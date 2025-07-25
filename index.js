@@ -15,7 +15,7 @@ app.use('/api', router);
 
 const startApp = async () => {
   try {
-    await mongoose.connect(DB_HOST, { useNewUrlParser: true, useUnifiedTopology: true });
+    await mongoose.connect(DB_HOST);
     app.listen(PORT, 'localhost', () => {
       console.log('SEVER listening on port 5000')
     })
