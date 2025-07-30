@@ -5,7 +5,7 @@ import router from './router.js';
 
 dotenv.config();
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 const DB_HOST = process.env.MOGO_DB
 
 const app = express();
@@ -16,8 +16,8 @@ app.use('/api', router);
 const startApp = async () => {
   try {
     await mongoose.connect(DB_HOST);
-    app.listen(PORT, 'localhost', () => {
-      console.log('SEVER listening on port 5000')
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`SERVER listening on port ${PORT}`)
     })
   } catch (e) {
     console.error(e);
