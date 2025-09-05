@@ -68,4 +68,13 @@ router.delete('/receipts/:id', async (req, res) => {
   }
 })
 
+router.get('/receipts/user/:userId', async (req, res) => {
+  try {
+    const receipts = await Receipt.find({userId: req.params.userId});
+    res.status(200).json(receipts);
+  } catch (e) {
+    res.status(500).json({error: e});
+  }
+})
+
 export default router;
