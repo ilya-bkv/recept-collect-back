@@ -1,5 +1,6 @@
 import express from 'express';
 import Receipt from './db/Receipt.js';
+import User from './db/User.js';
 
 const router = new express.Router()
 
@@ -74,6 +75,28 @@ router.get('/receipts/user/:userId', async (req, res) => {
     res.status(200).json(receipts);
   } catch (e) {
     res.status(500).json({error: e});
+  }
+})
+
+router.post('/login', async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    if (!id) {
+      return res.status(400).json({ error: 'id is required' });
+    }
+
+    let user = await User.findOne({ id });
+
+    if (user) {
+      return res.status(200).json(user);
+    }
+
+    user = await User.create({ id, goals: 0, receipts: [] });
+
+    return res.status(201).json(user);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
   }
 })
 

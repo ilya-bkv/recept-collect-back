@@ -15,6 +15,40 @@ Currently, this API does not implement authentication. All endpoints are publicl
 
 ## API Endpoints
 
+### Login / Create-or-Fetch User
+Creates a user if not exists, or returns existing user by database ID.
+
+**URL**: `/login`
+
+**Method**: `POST`
+
+**Request Body**:
+```json
+{
+  "id": "string"
+}
+```
+
+**Success Responses**:
+- **Code**: 200 OK (existing user)
+- **Code**: 201 Created (new user)
+- **Content**:
+```json
+{
+  "_id": "string",
+  "id": "string | null",
+  "goals": 0,
+  "receipts": ["string"],
+  "__v": 0
+}
+```
+
+**Error Responses**:
+- **Code**: 400 Bad Request
+  - **Content**: `{ "error": "id is required" }`
+- **Code**: 500 Internal Server Error
+  - **Content**: `{ "error": "error message" }`
+
 ### Create a Receipt
 Creates a new receipt in the system.
 
@@ -185,6 +219,13 @@ Retrieves all receipts belonging to a specific user.
   - **Content**: `{ "error": "error message" }`
 
 ## Data Models
+
+### User
+| Field | Type | Description |
+|-------|------|-------------|
+| id | String or null | External/user database ID (unique) |
+| goals | Number | Goals counter, defaults to 0 |
+| receipts | String[] | Array of receipt IDs, defaults to [] |
 
 ### Receipt
 | Field | Type | Description |
