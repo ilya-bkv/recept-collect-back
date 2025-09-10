@@ -100,4 +100,54 @@ router.post('/login', async (req, res) => {
   }
 })
 
+router.post('/credit-user', async (req, res) => {
+  try {
+    const { userId, goals, receiptData } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({ error: 'userId is required' });
+    }
+
+    if (!goals || goals <= 0) {
+      return res.status(400).json({ error: 'goals must be a positive number' });
+    }
+
+    if (!receiptData) {
+      return res.status(400).json({ error: 'receiptData is required' });
+    }
+
+    // Найти пользователя по ID
+    const user = await User.findOne({ id: userId });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Генерируем уникальный ID для чека
+    const receiptId = `receipt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+    // Обновляем пользователя: добавляем goals и новый чек в массив receipts
+    const updatedUser = await User.findOneAndUpdate(
+      { id: userId },
+      { 
+        $inc: { goals: goals },
+        $push: { 
+          receipts: {
+            receiptId: receiptId,
+            receiptData: receiptData
+          }
+        }
+      },
+      { new: true }
+    );
+
+    res.status(200).json({
+      message: 'User updated successfully',
+      user: updatedUser
+    });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+})
+
 export default router;
