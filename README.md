@@ -216,7 +216,7 @@ Retrieves all receipts belonging to a specific user.
 
 **Error Response**:
 - **Code**: 500 Internal Server Error
-  - **Content**: `{ "error": "error message" }`
+- **Content**: `{ "error": "error message" }`
 
 ## Data Models
 
