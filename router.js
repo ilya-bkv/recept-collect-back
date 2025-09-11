@@ -141,7 +141,7 @@ router.post('/credit-user', async (req, res) => {
       { id: userId },
       {
         $inc: { goals: goals },
-        $push: { receipts: receiptId }
+        $addToSet: { receipts: receiptId }
       },
       { new: true }
     );
