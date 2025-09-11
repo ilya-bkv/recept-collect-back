@@ -78,6 +78,19 @@ router.get('/receipts/user/:userId', async (req, res) => {
   }
 })
 
+router.get('/receipts/check/:id', async (req, res) => {
+  try {
+    const receipt = await Receipt.findOne({receiptId: req.params.id});
+    if (receipt) {
+      res.status(200).json({exists: true, receipt: receipt});
+    } else {
+      res.status(200).json({exists: false});
+    }
+  } catch (e) {
+    res.status(500).json({error: e});
+  }
+})
+
 router.post('/login', async (req, res) => {
   try {
     const { id } = req.body;
