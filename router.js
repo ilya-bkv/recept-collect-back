@@ -11,17 +11,17 @@ router.post('/receipts', async (req, res) => {
       return res.status(400).json({ error: 'userId and receiptData are required' });
     }
 
-    const receiptId = receiptData && receiptData.receiptId;
+    const receiptId = receiptData && receiptData.id;
     if (!receiptId) {
-      return res.status(400).json({ error: 'receiptData.receiptId is required' });
+      return res.status(400).json({ error: 'receiptData.id is required' });
     }
 
-    const existReceipt = await Receipt.findOne({ receiptId });
+    const existReceipt = await Receipt.findOne({ 'receiptData.id': receiptId });
     if (existReceipt) {
       return res.status(409).json({ error: 'Receipt already exists' });
     }
 
-    const createdReceipt = await Receipt.create({ userId, receiptId, receiptData });
+    const createdReceipt = await Receipt.create({ userId, receiptData });
     res.status(201).json({ exists: false, receipt: createdReceipt });
   } catch (e) {
     res.status(500).json({error: e});
@@ -39,7 +39,7 @@ router.get('/receipts', async (req, res) => {
 
 router.get('/receipts/:id', async (req, res) => {
   try {
-    const receipt = await Receipt.findOne({receiptId: req.params.id});
+    const receipt = await Receipt.findOne({ 'receiptData.id': req.params.id });
     if (!receipt) {
       return res.status(404).json({message: 'Receipt not found'});
     }
@@ -51,12 +51,13 @@ router.get('/receipts/:id', async (req, res) => {
 
 router.put('/receipts/', async (req, res) => {
   try {
-    const { userId, receiptId, receiptData } = req.body;
+    const { userId, receiptData } = req.body;
+    const receiptId = receiptData && receiptData.id;
     if (!receiptId) {
-      return res.status(400).json({ error: 'receiptId is required' });
+      return res.status(400).json({ error: 'receiptData.id is required' });
     }
     const updatedReceipt = await Receipt.findOneAndUpdate(
-      { receiptId },
+      { 'receiptData.id': receiptId },
       { userId, receiptData },
       {new: true}
     );
@@ -71,7 +72,7 @@ router.put('/receipts/', async (req, res) => {
 
 router.delete('/receipts/:id', async (req, res) => {
   try {
-    const deletedReceipt = await Receipt.findOneAndDelete({receiptId: req.params.id});
+    const deletedReceipt = await Receipt.findOneAndDelete({ 'receiptData.id': req.params.id });
     if (!deletedReceipt) {
       return res.status(404).json({message: 'Receipt not found'});
     }
