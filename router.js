@@ -210,16 +210,4 @@ router.post('/debug/receipts/clear', async (req, res) => {
   }
 })
 
-router.post('/admin/fix-users', async (req, res) => {
-  try {
-    const result = await User.updateMany(
-      { receipts: { $exists: false } },
-      { $set: { receipts: [] } }
-    );
-    res.json({ updated: result.modifiedCount });
-  } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
-});
-
 export default router;
