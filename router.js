@@ -130,16 +130,26 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ error: 'id is required' });
     }
 
+    // First check if the user exists
     let user = await User.findOne({ id });
+    let isNewUser = false;
 
     if (user) {
+      // User exists, return it
+      return res.status(200).json(user);
+    } else {
+      // User doesn't exist, create a new one
+      user = await User.create({ id, goals: 0, receipts: [] });
+      isNewUser = true;
+      return res.status(201).json(user);
+    }
+  } catch (e) {
+    // Check if this is a duplicate key error (user already exists)
+    if (e.code === 11000) {
+      // User was created by another concurrent request, fetch and return it
+      const user = await User.findOne({ id: req.body.id });
       return res.status(200).json(user);
     }
-
-    user = await User.create({ id, goals: 0, receipts: [] });
-
-    return res.status(201).json(user);
-  } catch (e) {
     res.status(500).json({ error: e.message });
   }
 })
