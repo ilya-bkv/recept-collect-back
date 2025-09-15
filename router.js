@@ -138,9 +138,14 @@ router.post('/login', async (req, res) => {
       // User exists, return it
       return res.status(200).json(user);
     } else {
-      // User doesn't exist, create a new one
-      user = await User.create({ id, goals: 0, receipts: [] });
-      isNewUser = true;
+      // User doesn't exist, create a new one with default values
+      // This will create a new user document in the database
+      // Each user will have a unique ID due to the unique constraint in the User model
+      user = await User.create({
+        id,
+        goals: 0,
+        receipts: []
+      });
       return res.status(201).json(user);
     }
   } catch (e) {
