@@ -130,9 +130,7 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ error: 'id is required' });
     }
 
-    // First check if the user exists
     let user = await User.findOne({ id });
-    let isNewUser = false;
 
     if (user) {
       // User exists, return it
@@ -155,7 +153,8 @@ router.post('/login', async (req, res) => {
       const user = await User.findOne({ id: req.body.id });
       return res.status(200).json(user);
     }
-    res.status(500).json({ error: e.message });
+    console.error('Error creating user:', e);
+    res.status(500).json({ error: e.message, stack: e.stack });
   }
 })
 
