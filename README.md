@@ -218,6 +218,48 @@ Retrieves all receipts belonging to a specific user.
 - **Code**: 500 Internal Server Error
 - **Content**: `{ "error": "error message" }`
 
+### Credit User
+Credits a user with goals and adds a receipt ID to their receipts array.
+
+**URL**: `/credit-user`
+
+**Method**: `POST`
+
+**Request Body**:
+```json
+{
+  "userId": "string",
+  "goals": number,
+  "receiptId": "string"
+}
+```
+
+**Success Response**:
+- **Code**: 200 OK
+- **Content**:
+```json
+{
+  "message": "User updated successfully",
+  "user": {
+    "_id": "string",
+    "id": "string",
+    "goals": number,
+    "receipts": ["string"],
+    "__v": 0
+  }
+}
+```
+
+**Error Responses**:
+- **Code**: 400 Bad Request
+  - **Content**: `{ "error": "userId is required" }`
+  - **Content**: `{ "error": "goals must be a positive number" }`
+  - **Content**: `{ "error": "receiptId is required" }`
+- **Code**: 404 Not Found
+  - **Content**: `{ "error": "User not found" }`
+- **Code**: 500 Internal Server Error
+  - **Content**: `{ "error": "error message" }`
+
 ## Data Models
 
 ### User

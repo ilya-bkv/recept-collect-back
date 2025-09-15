@@ -37,6 +37,15 @@ router.get('/receipts', async (req, res) => {
   }
 })
 
+router.get('/users', async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json(users);
+  } catch (e) {
+    res.status(500).json({error: e.message});
+  }
+})
+
 router.get('/receipts/:id', async (req, res) => {
   try {
     const receipt = await Receipt.findOne({ 'receiptData.id': req.params.id });
