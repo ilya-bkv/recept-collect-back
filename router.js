@@ -139,21 +139,28 @@ router.post('/login', async (req, res) => {
       // User doesn't exist, create a new one with default values
       // This will create a new user document in the database
       // Each user will have a unique ID due to the unique constraint in the User model
-      user = await User.create({
-        id,
-        goals: 0,
-        receipts: []
-      });
-      return res.status(201).json(user);
+      try {
+        user = await User.create({
+          id,
+          goals: 0,
+          receipts: []
+        });
+        return res.status(201).json(user);
+      } catch (createError) {
+        console.error('Error creating user:', createError);
+        // Check if this is a duplicate key error (user already exists)
+        if (createError.code === 11000) {
+          // User was created by another concurrent request, fetch and return it
+          const existingUser = await User.findOne({ id: req.body.id });
+          if (existingUser) {
+            return res.status(200).json(existingUser);
+          }
+        }
+        throw createError; // Re-throw to be caught by the outer catch block
+      }
     }
   } catch (e) {
-    // Check if this is a duplicate key error (user already exists)
-    if (e.code === 11000) {
-      // User was created by another concurrent request, fetch and return it
-      const user = await User.findOne({ id: req.body.id });
-      return res.status(200).json(user);
-    }
-    console.error('Error creating user:', e);
+    console.error('Error in login route:', e);
     res.status(500).json({ error: e.message, stack: e.stack });
   }
 })
