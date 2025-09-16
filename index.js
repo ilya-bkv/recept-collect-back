@@ -16,7 +16,9 @@ const app = express();
 const allowedOrigins = [
   'http://127.0.0.1:5173', // Vite dev
   'http://localhost:5173', // Vite from box
-  'https://cheeki-ilyabkvs-projects.vercel.app' // front Vercel
+  'https://cheeki-ilyabkvs-projects.vercel.app', // front Vercel
+  'https://127.0.0.1:3000', // Additional frontend origin (HTTPS)
+  'http://127.0.0.1:3000' // Additional frontend origin (HTTP)
 ];
 
 app.use(cors({
